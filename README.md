@@ -1,7 +1,7 @@
 Trackie
 ==========
 
-A Chrome extension to enhance debugging of some frequently-used tag management platforms (Google Tag Manager and Tealium) in combination with some frequently-used tags (Google Analytics, Adobe Analytics/Omniture, Floodlight, Comscore, Facebook, Bluekai, Youbora, Kinesis, Webtrekk).
+A Chrome extension to enhance debugging of some frequently-used tag management platforms (Google Tag Manager and Tealium) in combination with some frequently-used tags (Google Analytics, GA Audiences, Adobe Analytics/Omniture, Floodlight, Comscore, Facebook, Bluekai, Youbora, Kinesis, Webtrekk).
 
 Installation
 ------------
