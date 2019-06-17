@@ -1,5 +1,9 @@
 Trackie Changelog
 ====================
+0.11.o
+
++ added facebook, webtrekk, youbora, comscore, bluekai, kinesis
+
 0.10.15
 -------
 + support dark devtools theme
