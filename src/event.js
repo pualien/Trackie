@@ -34,11 +34,11 @@ function addBlocking(){
 				new chrome.declarativeWebRequest.RequestMatcher({
 					url: { hostContains: 'stags.bluekai.com', schemes: ['http','https'] },
 				}),
-				/*
+
 				new chrome.declarativeWebRequest.RequestMatcher({
-					url: { hostSuffix: 'sb.scorecardresearch.com', pathPrefix: '/p', schemes: ['http','https'] },
+					url: { hostContains: 'google.com', pathPrefix: '/ads/ga-audiences', schemes: ['http','https'] },
 				}),
-				*/
+
 				new chrome.declarativeWebRequest.RequestMatcher({
 					url: { hostSuffix: 'google-analytics.com', pathPrefix: '/__utm.gif', schemes: ['http','https'] },
 				}),

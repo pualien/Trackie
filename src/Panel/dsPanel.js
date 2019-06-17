@@ -676,6 +676,157 @@ function parseWebtrekk(v, ref) {
     return therow;
 }
 
+function parseGaAudiences(v, ref) {
+    var allParams = '';
+    v.utmac = 'GA Audiences';
+    for (var param in v.allParams)
+        allParams = allParams + '<tr class="allparams allparams' + ref + '"><td>' + param + '</td><td>' + v.allParams[param] + '</td></tr>\n';
+    var therow = '<tr><td></td><td><u>' + v.utmac + '</u> (' + v.reqType + ') <a class="toggle" data-toggle="' + ref + '">+</a></td></tr>\n' + allParams;
+
+    if (v.allParams.gtm)
+        therow = therow + '\n<tr><td></td><td><i>(via ' + v.allParams.gtm + ')</i></td></tr>\n';
+
+    switch (v.utmt) {
+        case 'event':
+            if (v.utme.indexOf('5(') >= 0) {
+                var eventdata = v.utme.match(/5\([^)]+\)(\(\d+\))?/i)[0].replace(/\'1/g, ')').replace(/\'3/g, '!').replace(')(', '*').substring(2).split('*'); //find events and unescape
+                eventdata[eventdata.length - 1] = eventdata[eventdata.length - 1].substring(0, eventdata[eventdata.length - 1].length - 1); //chop trailing paren
+                $.each(eventdata, function (a, b) {
+                    eventdata[a] = eventdata[a].replace(/\'2/g, '*').replace(/\'0/g, '\'');
+                });
+                therow = therow + '\n<tr><td><b>category</b></td><td><span>' + eventdata[0] +
+                    '</span></td></tr>\n<tr><td><b>action</b></td><td><span>' + eventdata[1] +
+                    '</span></td></tr>\n<tr><td><b>label</b></td><td><span>' + eventdata[2] + '</span></td></tr>';
+                if (eventdata[3]) therow = therow + '\n<tr><td><b>value</b></td><td>' + eventdata[3] + '</td></tr>';
+            }
+            break;
+        case 'transaction':
+            therow = therow + '\n<tr><td></td><td><b>transaction ' + v.utmtid + '</b></td></tr>\n';
+            if (v.utmtto) therow = therow + '<tr><td><b>revenue</b></td><td><span>' + v.utmtto + '</span></td></tr>\n';
+            if (v.utmtsp) therow = therow + '<tr><td><b>shipping</b></td><td><span>' + v.utmtsp + '</span></td></tr>\n';
+            if (v.utmttx) therow = therow + '<tr><td><b>tax</b></td><td><span>' + v.utmttx + '</span></td></tr>\n';
+            if (v.utmtst) therow = therow + '<tr><td><b>affiliation</b></td><td><span>' + v.utmtst + '</span></td></tr>\n';
+            break;
+        case 'item':
+            therow = therow + '\n<tr><td></td><td><b>transaction ' + v.utmtid + '</b></td></tr>\n';
+            if (v.utmipn) therow = therow + '<tr><td><b>item/qty</b></td><td><span>(' + v.utmiqt + 'x) ' + v.utmipn + '</span></td></tr>\n';
+            if (v.utmipc) therow = therow + '<tr><td><b>sku</b></td><td><span>' + v.utmipc + '</span></td></tr>\n';
+            if (v.utmiva) therow = therow + '<tr><td><b>category</b></td><td><span>' + v.utmiva + '</span></td></tr>\n';
+            if (v.utmipr) therow = therow + '<tr><td><b>price</b></td><td><span>' + v.utmipr + '</span></td></tr>\n';
+            break;
+        case 'social':
+            therow = therow + '\n<tr><td><b>network</b></td><td><span>' + v.utmsn +
+                '</span></td></tr>\n<tr><td><b>action</b></td><td><span>' + v.utmsa +
+                '</span></td></tr>\n<tr><td><b>target</b></td><td><span>' + v.utmsid + '</span></td></tr>';
+            break;
+        case 'var':
+            therow = therow + '\n<tr><td></td><td><b>user-defined variable</b></td></tr>\n';
+            try {
+                if (v.utmcc && v.utmcc.match(/__utmv=[^;]*/)[0]) therow = therow + '\n<tr><td><b>value</b></td><td><span>' + v.utmcc.match(/__utmv=[^;]*/)[0].replace('__utmv=', '') + '</span></td></tr>';
+            } catch (err) {
+                console.log('user-defined variable error: ' + err);
+            }
+            break;
+        default:  //pageview
+            therow = therow + '\n<tr><td><b>url</b></td><td><span>' + v.__url + '</span></td></tr>';
+            break;
+    }
+
+    // page groupings
+    if (v.utmpg) $.each(v.utmpg, function (pg, pgv) {
+        try {
+            var grouping = pgv.split(':');
+            therow = therow + '<tr><td><b>page grouping ' + grouping[0] + '</b></td><td><span>' + grouping[1] + '</span></td></tr>\n';
+        } catch (e) {
+            console.log('error parsing classic page groupings');
+        }
+    });
+
+    if (((v.utme) && (v.utme.indexOf('14(') >= 0)) && (v.utme.match(/14\([\d\*]+\)\([\d\*]+\)/i) !== null)) { //we have performance information
+        var performancedata = v.utme.match(/14\([\d\*]+\)\([\d\*]+\)/i)[0].substring(2);
+        therow = therow + '\n<tr><td><b>speed</b></td><td><span>' + performancedata.replace(')(', ')<br>(') + '</span></td></tr>';
+    }
+    if ((v.utme) && (v.utme.indexOf('12(') >= 0)) { //we have in-page information
+        var inpagedata = v.utme.match(/12\([^)]+(?=\))/i)[0].substring(3).replace('\'1', ')').replace('\'2', '*').replace('\'3', '!').replace('\'0', '\'');
+        therow = therow + '\n<tr><td><b>in-page ID</b></td><td><span>' + inpagedata + '</span></td></tr>';
+    }
+    if ((v.utme) && (v.utme.indexOf('8(') >= 0)) { //we have CVs here
+        var gaCVs = v.utme.substring(v.utme.indexOf('8(')).match(/[^\)]+(\))/g);
+
+        $.each(gaCVs, function (i, d) {
+                gaCVs[i] = gaCVs[i].replace(/^[8910]+\(/, '').match(/[^\*|^\)]+(?=[\*\)])/g);
+            }
+        );
+        var newspot = 0;
+        var gaCVsfixed = [{}, {}, {}];
+        for (var row in gaCVs[0]) {
+            if (gaCVs[0][row].indexOf('!') >= 0) {
+                newspot = gaCVs[0][row].substring(0, gaCVs[0][row].indexOf('!')) - 1;
+
+                $.each(gaCVs, function (a, b) {
+                    if (b.hasOwnProperty(row)) b[row] = b[row].substring(b[row].indexOf('!') + 1);
+                });
+            }
+
+            gaCVsfixed[0][newspot] = gaCVs[0][row];
+            gaCVsfixed[1][newspot] = gaCVs[1][row];
+            try {
+                gaCVsfixed[2][newspot] = typeof gaCVs[2] !== 'undefined' ? (typeof gaCVs[2][row] !== 'undefined' ? gaCVs[2][row].charAt(0) : '0') : '0';
+            } catch (err) {
+                console.log(err + ' @ CV ' + newspot);
+            }
+
+            newspot = newspot + 1;
+        }
+
+        newspot = 0;
+        for (var s in gaCVs[2]) {
+            if (gaCVs[2][s].indexOf('!') >= 0) {
+                newspot = gaCVs[2][s].substring(0, gaCVs[2][s].indexOf('!')) - 1;
+                for (i = 0; i < newspot; i++) {
+                    gaCVsfixed[2][i] = '0';
+                }
+                gaCVs[2][s] = gaCVs[2][s].substring(gaCVs[2][s].indexOf('!') + 1);
+            }
+            try {
+                gaCVsfixed[2][newspot] = typeof gaCVs[2] !== 'undefined' ? (typeof gaCVs[2][s] !== 'undefined' ? gaCVs[2][s].charAt(0) : '0') : '0';
+            } catch (err) {
+                console.log(err + ' @ CV ' + newspot);
+            }
+
+            newspot = newspot + 1;
+        }
+
+        gaCVs = gaCVsfixed;
+
+        $.each(gaCVs[0], function (i, d) {
+                gaCVs[0][i] = gaCVs[0][i].replace('\'1', ')').replace('\'2', '*').replace('\'3', '!').replace('\'0', '\'');
+                if (gaCVs[1][i]) gaCVs[1][i] = gaCVs[1][i].replace('\'1', ')').replace('\'2', '*').replace('\'3', '!').replace('\'0', '\'');
+
+                therow = therow + '<tr><td><b>CV ' + (parseInt(i) + 1) + '</b></td><td><span>' + gaCVs[0][i] + ' <b>=</b> ' + gaCVs[1][i] + ' <i>(';
+                switch (String(gaCVs[2][i])) {
+                    case '0':
+                        therow = therow + 'no scope-&gt; page';
+                        break;
+                    case '1':
+                        therow = therow + 'visitor scope';
+                        break;
+                    case '2':
+                        therow = therow + 'session scope';
+                        break;
+                    case '3':
+                        therow = therow + 'page scope';
+                        break;
+                }
+                therow = therow + ')</i></span></td></tr>\n';
+                // }
+            }
+        );
+    }
+
+    return therow;
+}
+
 
 function parseBluekai(v, ref) {
     var allParams = '';
@@ -1468,6 +1619,8 @@ function tagHTML(index) {
                 therow = parseKinesis(v, index + '_' + q);
             else if ((v.reqType === 'bluekai') && dataslayer.options.showBluekai)
                 therow = parseBluekai(v, index + '_' + q);
+            else if ((v.reqType === 'ga-audiences') && dataslayer.options.showGaAudiences)
+                therow = parseGaAudiences(v, index + '_' + q);
             else
                 return;
 
@@ -1930,6 +2083,9 @@ function newRequest(request) {
     } else if (/stags\.bluekai\.com/i.test(request.request.url)) {
         reqType = 'bluekai';
     }
+     else if (/google\.com\/ads\/ga-audiences/i.test(request.request.url)) {
+        reqType = 'ga-audiences';
+    }
     else return;  //break out if it's not a tag we're looking for, else...
 
     var requestURI;
@@ -1942,7 +2098,7 @@ function newRequest(request) {
 
     // parse query string into key/value pairs
     var queryParams = {};
-    if ((reqType === 'classic') || (reqType === 'universal') || (reqType === 'dc_js') || (reqType === 'sitecatalyst') || (reqType === 'tr') || (reqType === 'wbtrkk') || (reqType === 'youbora') || (reqType === 'comscore')) {
+    if ((reqType === 'classic') || (reqType === 'universal') || (reqType === 'dc_js') || (reqType === 'sitecatalyst') || (reqType === 'tr') || (reqType === 'wbtrkk') || (reqType === 'youbora') || (reqType === 'comscore') || (reqType === 'ga-audiences')) {
         try {
             requestURI.split('&').forEach(function (pair) {
                     pair = pair.split('=');

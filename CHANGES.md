@@ -1,6 +1,12 @@
 Trackie Changelog
 ====================
-0.11.o
+0.11.01
+-------
+
++ added GA Audiences
+
+0.11.00
+-------
 
 + added facebook, webtrekk, youbora, comscore, bluekai, kinesis
 
