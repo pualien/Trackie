@@ -13,7 +13,7 @@ Use
 ---
 A new panel will appear in Developer Tools titled **Trackie**, containing a page group and URL for each pageload in the tab, with each push to the dataLayer variable (in the case of GTM's array-based data layer) appearing in a subgroup.
 
-![](http://i.imgur.com/ffdmxmU.png)
+![](https://i.imgur.com/AG7VjK8.png)
 
 1. Current URL / TMS logo (or X if no TMS found); click to collapse/expand this page
 2. TMS container ID; becomes a dropdown menu if multiple containers are present

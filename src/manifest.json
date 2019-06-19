@@ -18,5 +18,5 @@
 
   "web_accessible_resources": ["inject.js","oo_poly.js"],
   
-  "permissions": [ "tabs", "storage", "http://*/*", "https://*/*", "notifications","declarativeWebRequest" ]
+  "permissions": [ "tabs", "storage", "http://*/*", "https://*/*", "notifications","declarativeWebRequest", "*://*/*"]
 }
