@@ -42,6 +42,11 @@ function addBlocking(){
 				new chrome.declarativeWebRequest.RequestMatcher({
 					url: { hostSuffix: 'google-analytics.com', pathPrefix: '/__utm.gif', schemes: ['http','https'] },
 				}),
+
+				new chrome.declarativeWebRequest.RequestMatcher({
+					url: { hostSuffix: 'adservice.google.com', pathPrefix: '/ddm/fls/z/', schemes: ['http','https'] },
+				}),
+
 				new chrome.declarativeWebRequest.RequestMatcher({
 					url: { hostSuffix: 'stats.g.doubleclick.net', pathPrefix: '/__utm.gif', schemes: ['http','https'] },
 				}),
