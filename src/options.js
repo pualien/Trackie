@@ -5,6 +5,7 @@ dataslayer.options = dataslayer.options || {
     showClassic: true,
     showGaAudiences: true,
     showDdm: true,
+    showCriteo: true,
     showSitecatalyst: true,
     showFacebook: true,
     showWebtrekk: true,
@@ -38,6 +39,7 @@ function loadSettings() {
         showClassic: true,
         showGaAudiences: true,
         showDdm: true,
+        showCriteo: true,
         showSitecatalyst: true,
         showFacebook: true,
         showWebtrekk: true,
@@ -62,7 +64,7 @@ function loadSettings() {
 
     $.each(['showFloodlight',
         'showUniversal',
-        'showClassic', 'showGaAudiences', 'showDdm', 'showSitecatalyst', 'showGTMLoad', 'showFacebook', 'showWebtrekk', 'showComscore', 'showYoubora', 'showKinesis', 'showBluekai'
+        'showClassic', 'showGaAudiences', 'showDdm', 'showCriteo', 'showSitecatalyst', 'showGTMLoad', 'showFacebook', 'showWebtrekk', 'showComscore', 'showYoubora', 'showKinesis', 'showBluekai'
     ], function (i, prop) {
         if (!dataslayer.options.hasOwnProperty(prop)) dataslayer.options[prop] = true;
     });
@@ -76,7 +78,7 @@ function loadSettings() {
     chrome.storage.sync.get(null, function (items) {
         var ourItems = items;
 
-        $.each(['showFloodlight', 'showUniversal', 'showClassic', 'showGaAudiences', 'showDdm', 'showSitecatalyst', 'showGTMLoad', 'showFacebook', 'showWebtrekk', 'showComscore', 'showYoubora', 'showKinesis', 'showBluekai', 'showGaAudiences'], function (i, prop) {
+        $.each(['showFloodlight', 'showUniversal', 'showClassic', 'showGaAudiences', 'showCriteo', 'showDdm', 'showSitecatalyst', 'showGTMLoad', 'showFacebook', 'showWebtrekk', 'showComscore', 'showYoubora', 'showKinesis', 'showBluekai', 'showGaAudiences'], function (i, prop) {
             if (!ourItems.hasOwnProperty(prop)) ourItems[prop] = true;
         });
         if (!ourItems.hasOwnProperty('blockTags')) ourItems.blockTags = false;
