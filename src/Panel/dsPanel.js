@@ -1594,7 +1594,7 @@ function parseKinesis(v, ref) {
     //alert(JSON.stringify(v));
     for (var param in v.allParams)
         allParams = allParams + '<tr class="allparams allparams' + ref + '"><td>' + param + '</td><td>' + v.allParams[param] + '</td></tr>\n';
-    var therow = '<tr><td></td><td><u>' + v.utmac + '</u> (' + v.reqType + ') <a class="toggle" data-toggle="' + ref + '">+</a></td></tr>\n' + allParams;
+    var therow = '<tr><td></td><td><u>' + v.utmac + '</u> (' + v.tid + ') <a class="toggle" data-toggle="' + ref + '">+</a></td></tr>\n' + allParams;
 
     if (v.allParams.gtm)
         therow = therow + '\n<tr><td></td><td><i>(via ' + v.allParams.gtm + ')</i></td></tr>\n';
@@ -2431,15 +2431,16 @@ function newRequest(request) {
                 queryParams[pair[0]] = decodeURIComponent(pair[1] || '');
             }
         );
-    else if (reqType === 'kinesis') {
+    else if (reqType === 'kinesis' && requestURI.includes('Records')) {
         try {
-            queryParams = orderKeys(flattenObject(JSON.parse(decodeBase64(JSON.parse(requestURI)["Records"][0]["Data"]))));
+            queryParams = orderKeys(flattenObject(JSON.parse(decodeBase64(JSON.parse(requestURI)['Records'][0]["Data"]))));
+            queryParams['tid'] = JSON.parse(requestURI)['StreamName'];
 
         } catch (e) {
             console.log('error ' + e + ' with url ' + request.request.url);
         }
     }
-    else if (reqType === 'bluekai') {
+    else if (reqType === 'bluekai' && !requestURI.includes('ret=js')) {
         try {
             requestURI.split('&').forEach(function (pair) {
                     pair = decodeURIComponent(pair);
