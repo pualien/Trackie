@@ -2,9 +2,9 @@
   "manifest_version": 2,
 
   "name": "Trackie",
-  "description": "Debug and test tag management and analytics implementations.",
-  "short_name": "dataslayer",
-  "version": "0.11.04",
+  "description": "Debug and test tag manager and analytics implementations.",
+  "short_name": "trackie",
+  "version": "0.11.05",
 
   "icons":{"48":"i48.png","128":"i128.png"},
 
@@ -15,8 +15,10 @@
     "scripts": ["event.js"],
     "persistent": false
   },
+  "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
+
 
   "web_accessible_resources": ["inject.js","oo_poly.js"],
   
-  "permissions": [ "tabs", "storage", "http://*/*", "https://*/*", "notifications","declarativeWebRequest", "*://*/*"]
+  "permissions": ["storage", "http://*/*", "https://*/*", "notifications","declarativeWebRequest", "*://*/*", "activeTab"]
 }

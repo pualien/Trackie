@@ -28,6 +28,8 @@ dataslayer.options = {
     showArrayIndices: false
 };
 
+var gaTrackerId = 'UA-150859691-1';
+
 
 try {
     if (typeof localStorage.options !== 'undefined') dataslayer.options = JSON.parse(localStorage.options);
@@ -1900,6 +1902,7 @@ function tagHTML(index) {
     $.each(dataslayer.tags[index], function (q, v) {
             if (v.tid && (dataslayer.options.ignoredTags.indexOf(v.tid) > -1)) return;
             if (v.utmac && (dataslayer.options.ignoredTags.indexOf(v.utmac) > -1)) return;
+            if ((v.tid && v.tid === gaTrackerId) || (v.utmac && v.utmac === gaTrackerId)) return;
 
             var therow = '';
             if (((v.reqType == 'classic') || (v.reqType == 'dc_js')) && dataslayer.options.showClassic)
@@ -2425,7 +2428,7 @@ function newRequest(request) {
         } catch (e) {
             console.log('error ' + e + ' with url ' + request.request.url);
         }
-    } else if (reqType == 'floodlight')
+    } else if (reqType === 'floodlight')
         requestURI.split(';').slice(1).forEach(function (pair) {
                 pair = pair.split('=');
                 queryParams[pair[0]] = decodeURIComponent(pair[1] || '');
@@ -2440,7 +2443,7 @@ function newRequest(request) {
             console.log('error ' + e + ' with url ' + request.request.url);
         }
     }
-    else if (reqType === 'bluekai' && !requestURI.includes('ret=js')) {
+    else if (reqType === 'bluekai') {
         try {
             requestURI.split('&').forEach(function (pair) {
                     pair = decodeURIComponent(pair);
