@@ -5,6 +5,8 @@ Trackie
 
 A Chrome extension to enhance debugging of some frequently-used tag management platforms (Google Tag Manager and Tealium) in combination with some frequently-used tags (Google Analytics, GA Audiences, Ddm, Criteo, Adobe Analytics/Omniture, Floodlight, Comscore, Facebook, Bluekai, Youbora, Kinesis, Webtrekk).
 
+Tag calls can now be exported in csv 💾 in order to better analyze data collected offline!
+
 Installation
 ------------
 To use the unpacked source version, enable Developer mode in the [Chrome extensions page](chrome://extensions/) and *Load unpacked extension* from the checked-out **src** folder.
