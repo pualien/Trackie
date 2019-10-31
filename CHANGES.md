@@ -1,5 +1,20 @@
 Trackie Changelog
 ====================
+0.11.06
+-------
+
++ added download feature to get all tags in comma csv format
+
+0.11.03
+-------
+
++ improved settings
+
+0.11.04
+-------
+
++ cleaned Kinesis output
+
 0.11.03
 -------
 

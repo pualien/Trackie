@@ -28,9 +28,6 @@ dataslayer.options = {
     showArrayIndices: false
 };
 
-var gaTrackerId = 'UA-150859691-1';
-
-
 try {
     if (typeof localStorage.options !== 'undefined') dataslayer.options = JSON.parse(localStorage.options);
 } catch (error) {
@@ -2538,6 +2535,121 @@ function newRequest(request) {
 loadSettings();
 
 
+// CSV EXPORT
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function getKeys(obj) {
+  var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  if (typeof obj === 'undefined' || obj === null) return [];
+  return [].concat(_toConsumableArray(Object.keys(obj).map(function (key) {
+    return "".concat(prefix).concat(key);
+  })), _toConsumableArray(Object.entries(obj).reduce(function (acc, _ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+        key = _ref2[0],
+        value = _ref2[1];
+
+    if (_typeof(value) === 'object') return [].concat(_toConsumableArray(acc), _toConsumableArray(getKeys(value, "".concat(prefix).concat(key, "."))));
+    return acc;
+  }, [])));
+}
+
+function flatObject(obj) {
+  var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  if (typeof obj === 'undefined' || obj === null) return {};
+  return Object.entries(obj).reduce(function (acc, _ref3) {
+    var _ref4 = _slicedToArray(_ref3, 2),
+        key = _ref4[0],
+        value = _ref4[1];
+
+    if (_typeof(value) === 'object') return { ...acc,
+      ...flatObject(value, "".concat(prefix).concat(key, "."))
+    };
+    return _defineProperty({ ...acc
+    }, "".concat(prefix).concat(key), value);
+  }, {});
+}
+
+function escapeCsvValue(cell) {
+  if (cell.replace(/ /g, '').match(/[\s,"]/)) {
+    return '"' + cell.replace(/"/g, '""') + '"';
+  }
+
+  return cell;
+}
+
+function objectsToCsv(arrayOfObjects) {
+
+  // collect all available keys
+  var keys = new Set(arrayOfObjects.reduce(function (acc, item) {
+    return [].concat(_toConsumableArray(acc), _toConsumableArray(getKeys(item)));
+  }, [])); // for each object create all keys
+
+  var values = arrayOfObjects.map(function (item) {
+    var fo = flatObject(item);
+    var val = Array.from(keys).map(function (key) {
+      return key in fo ? escapeCsvValue(fo[key]) : '';
+    });
+    return val.join(',');
+  });
+  return "".concat(Array.from(keys).join(','), "\n").concat(values.join('\n'));
+}
+
+function downloadFile(data, fileName) {
+
+        var arrayOfObjects = data.map(function(row){
+            return Object.assign({reqType: row.reqType}, row.allParams)
+        });
+        var csv = objectsToCsv(arrayOfObjects);
+
+        var blob = new Blob([ csv ], {
+            type : "application/csv;charset=utf-8;"
+        });
+
+        if (window.navigator.msSaveBlob) {
+            // FOR IE BROWSER
+            navigator.msSaveBlob(blob, fileName);
+        } else {
+            // FOR OTHER BROWSERS
+            try{
+                var csvUrl = URL.createObjectURL(blob);
+                chrome.downloads.download({url: csvUrl, filename:  fileName});
+            }
+            catch (e) {
+                // FALLBACK FOR CHROME PERMISSION ERRORS
+                var link = document.createElement("a");
+                link.href = csvUrl;
+                link.style = "visibility:hidden";
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+        }
+}
+
+
+
+
 //set up UI
 $('a.settings').click(function () {
     chrome.runtime.sendMessage({type: 'openOptionsPage'});
@@ -2563,7 +2675,15 @@ $('#clearbtnyes').click(function () {
     $('#clearconfirm').css({"display": "none"});
 });
 
-if (chrome.devtools.panels.themeName == 'dark') {
+$('#downloadbtnyes').click(function () {
+    downloadFile(dataslayer.tags[dataslayer.activeIndex], 'tag_export.csv');
+
+
+});
+
+
+
+if (chrome.devtools.panels.themeName === 'dark') {
     $('body').addClass('dark');
 }
 

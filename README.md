@@ -9,7 +9,7 @@ Installation
 ------------
 To use the unpacked source version, enable Developer mode in the [Chrome extensions page](chrome://extensions/) and *Load unpacked extension* from the checked-out **src** folder.
 
-The latest official version will be available at the soon [Chrome Web Store](https://chrome.google.com).
+The latest official version is on the [Chrome Web Store](https://chrome.google.com/webstore/detail/trackie/iphjjodolgbelaogcefgpegebgecopeh).
 
 Use
 ---

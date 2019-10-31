@@ -135,6 +135,8 @@ a.settings img {position: fixed; top:25px; right: 2px; opacity: 0.3; -webkit-tra
 a.settings img:hover {opacity: 1;}
 a.clearbtn img {position: fixed; top:50px; right: 2px; opacity: 0.3; -webkit-transition: opacity 0.3s; transition: opacity 0.3s;}
 a.clearbtn img:hover {opacity: 1;}
+#downloadbtnyes img {position: fixed; top:75px; right: 2px; opacity: 0.3; -webkit-transition: opacity 0.3s; transition: opacity 0.3s;}
+#downloadbtnyes img:hover {opacity: 1;}
 
 a.toggle { padding: 0 5 0 5 !important;}
 
