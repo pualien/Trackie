@@ -51,6 +51,10 @@ function addBlocking(){
 				}),
 
 				new chrome.declarativeWebRequest.RequestMatcher({
+					url: { hostSuffix: 'secure-it.imrworldwide.com', pathPrefix: '/cgi-bin/gn', schemes: ['http','https'] },
+				}),
+
+				new chrome.declarativeWebRequest.RequestMatcher({
 					url: { hostSuffix: 'stats.g.doubleclick.net', pathPrefix: '/__utm.gif', schemes: ['http','https'] },
 				}),
 				new chrome.declarativeWebRequest.RequestMatcher({

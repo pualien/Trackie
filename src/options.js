@@ -54,6 +54,7 @@ function loadSettings() {
         showYoubora: true,
         showKinesis: true,
         showBluekai: true,
+        showNielsen: true,
         showGTMLoad: true,
         ignoredTags: [],
         collapseNested: false,
