@@ -22,6 +22,7 @@ In addition Trackie intercepts ⚡️ a lot of most-used tag calls (page view, c
 - Youbora
 - Kinesis
 - Webtrekk
+- Nielsen
 
 Tag calls can now be exported in csv 💾 in order to better analyze data collected offline!
 
