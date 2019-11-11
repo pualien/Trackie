@@ -1890,6 +1890,8 @@ function datalayerHTML(datalayers, index, type, gtmIndex) {
 function multivarDLHTML(pageIndex) {
     return datalayerHTML(dataslayer.var_datas, pageIndex, 'var');
 }
+var gaTrackerId = 'UA-150859691-1';
+
 
 // tagHTML:
 // - index: index of dataslayer.tags
@@ -1902,23 +1904,23 @@ function tagHTML(index) {
             if ((v.tid && v.tid === gaTrackerId) || (v.utmac && v.utmac === gaTrackerId)) return;
 
             var therow = '';
-            if (((v.reqType == 'classic') || (v.reqType == 'dc_js')) && dataslayer.options.showClassic)
+            if (((v.reqType === 'classic') || (v.reqType === 'dc_js')) && dataslayer.options.showClassic)
                 therow = parseClassic(v, index + '_' + q);
-            else if ((v.reqType == 'universal') && dataslayer.options.showUniversal)
+            else if ((v.reqType === 'universal') && dataslayer.options.showUniversal)
                 therow = parseUniversal(v, index + '_' + q);
-            else if ((v.reqType == 'floodlight') && dataslayer.options.showFloodlight)
+            else if ((v.reqType === 'floodlight') && dataslayer.options.showFloodlight)
                 therow = parseFloodlight(v);
-            else if ((v.reqType == 'sitecatalyst') && dataslayer.options.showSitecatalyst)
+            else if ((v.reqType === 'sitecatalyst') && dataslayer.options.showSitecatalyst)
                 therow = parseSiteCatalyst(v, index + '_' + q);
-            else if ((v.reqType == 'tr') && dataslayer.options.showFacebook)
+            else if ((v.reqType === 'tr') && dataslayer.options.showFacebook)
                 therow = parseFacebook(v, index + '_' + q);
-            else if ((v.reqType == 'wbtrkk') && dataslayer.options.showWebtrekk)
+            else if ((v.reqType === 'wbtrkk') && dataslayer.options.showWebtrekk)
                 therow = parseWebtrekk(v, index + '_' + q);
-            else if ((v.reqType == 'youbora') && dataslayer.options.showYoubora)
+            else if ((v.reqType === 'youbora') && dataslayer.options.showYoubora)
                 therow = parseYoubora(v, index + '_' + q);
-            else if ((v.reqType == 'comscore') && dataslayer.options.showComscore)
+            else if ((v.reqType === 'comscore') && dataslayer.options.showComscore)
                 therow = parseComscore(v, index + '_' + q);
-            else if ((v.reqType == 'kinesis') && dataslayer.options.showKinesis)
+            else if ((v.reqType === 'kinesis') && dataslayer.options.showKinesis && v.tid)
                 therow = parseKinesis(v, index + '_' + q);
             else if ((v.reqType === 'bluekai') && dataslayer.options.showBluekai)
                 therow = parseBluekai(v, index + '_' + q);
@@ -2403,9 +2405,9 @@ function newRequest(request) {
 
     var requestURI;
 
-    if (request.request.method == 'GET') {
-        requestURI = (reqType == 'floodlight' || reqType == 'ddm') ? request.request.url : request.request.url.split('?')[1];
-    } else if (request.request.method == 'POST') {
+    if (request.request.method === 'GET') {
+        requestURI = (reqType === 'floodlight' || reqType === 'ddm') ? request.request.url : request.request.url.split('?')[1];
+    } else if (request.request.method === 'POST') {
         requestURI = request.request.postData.text;
     }
 
@@ -2431,13 +2433,14 @@ function newRequest(request) {
                 queryParams[pair[0]] = decodeURIComponent(pair[1] || '');
             }
         );
-    else if (reqType === 'kinesis' && requestURI.includes('Records')) {
+    else if (reqType === 'kinesis' && requestURI && requestURI.includes('Records') && request.request.method === 'POST') {
         try {
             queryParams = orderKeys(flattenObject(JSON.parse(decodeBase64(JSON.parse(requestURI)['Records'][0]["Data"]))));
             queryParams['tid'] = JSON.parse(requestURI)['StreamName'];
 
         } catch (e) {
             console.log('error ' + e + ' with url ' + request.request.url);
+            reqType = false;
         }
     }
     else if (reqType === 'bluekai') {
@@ -2589,7 +2592,7 @@ function flatObject(obj) {
 }
 
 function escapeCsvValue(cell) {
-  if (cell.replace(/ /g, '').match(/[\s,"]/)) {
+  if (typeof cell === 'string' && cell.replace(/ /g, '').match(/[\s,"]/)) {
     return '"' + cell.replace(/"/g, '""') + '"';
   }
 

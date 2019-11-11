@@ -165,3 +165,9 @@ window.setTimeout(function () {
         firstRun = false;
     }
 }, 1);
+
+
+$("#checkAll").change(function(){
+    var status = $(this).is(":checked") ? true : false;
+    $(".check-tags").prop("checked",status);
+});

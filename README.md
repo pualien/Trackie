@@ -4,7 +4,7 @@ Trackie
 ==========
 
 Debug and test tag manager and analytics implementations.
-Trackie 🐞 is a Chrome extension  to enhance debugging 👨🏼‍💻 of some frequently-used tag management platforms 🌩:
+Trackie 🐞 is a Chrome extension to enhance debugging 👨🏼‍💻 of some frequently-used tag management platforms 🌩:
 - Google Tag Manager
 - Tealium
 - Commanders Act
