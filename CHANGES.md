@@ -3,6 +3,11 @@ Trackie Changelog
 0.11.09
 -------
 
++ added Segment
+
+0.11.09
+-------
+
 + added Yandex, improved panel and csv output
 
 0.11.08

@@ -4,7 +4,7 @@ chrome.runtime.onConnect.addListener(function(port){
 	devtoolsPort.push(port);
 });
 
-var dsDebug = (chrome.runtime.id == 'ikbablmmjldhamhcldjjigniffkkjgpo' ? false : true);
+var dsDebug = (chrome.runtime.id !== 'ikbablmmjldhamhcldjjigniffkkjgpo');
 
 
 function addBlocking(){
@@ -65,6 +65,12 @@ function addBlocking(){
 				}),
 				new chrome.declarativeWebRequest.RequestMatcher({
 					url: { pathPrefix: '/b/ss', queryContains: 'AQB=1', schemes: ['http','https'] },
+				}),
+				new chrome.declarativeWebRequest.RequestMatcher({
+					url: { hostSuffix: 'api.segment.io', pathPrefix: '/v1/t', schemes: ['http','https'] },
+				}),
+				new chrome.declarativeWebRequest.RequestMatcher({
+					url: { hostSuffix: 'api.segment.io', pathPrefix: '/v1/i', schemes: ['http','https'] },
 				})
 				],
 			actions: [
@@ -84,21 +90,21 @@ chrome.storage.sync.get(null,function(items){
 
 chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 	if (dsDebug) console.log(message);
-	if (message.type=='dataslayer_gtm_push'||message.type=='dataslayer_gtm'||message.type=='dataslayer_tlm'||message.type=='dataslayer_tco'||message.type=='dataslayer_var'||message.type=='dataslayer_dtm'){
+	if (message.type==='dataslayer_gtm_push'||message.type==='dataslayer_gtm'||message.type==='dataslayer_tlm'||message.type==='dataslayer_tco'||message.type==='dataslayer_var'||message.type==='dataslayer_dtm'){
 		message.tabID=sender.tab.id;
 		devtoolsPort.forEach(function(v,i,x){
 			try{v.postMessage(message);}catch(e){console.log(e);}
 		});
 	}
-	else if (message.type=='dataslayer_pageload'||message.type=='dataslayer_opened'){
+	else if (message.type==='dataslayer_pageload'||message.type==='dataslayer_opened'){
 		chrome.tabs.executeScript(message.tabID,{ file: 'content.js', runAt: 'document_idle', allFrames: true });
 	}
-	else if (message.type=='dataslayer_refresh'){
+	else if (message.type==='dataslayer_refresh'){
 		chrome.tabs.sendMessage(message.tabID,{ask: 'refresh'});
 	}
-	else if (message.type=='dataslayer_unload')
+	else if (message.type==='dataslayer_unload')
 		chrome.tabs.executeScript(message.tabID,{ code: 'document.head.removeChild(document.getElementById(\'dataslayer_script\'));', runAt: "document_idle" });
-	else if (message.type=='dataslayer_loadsettings'){
+	else if (message.type==='dataslayer_loadsettings'){
 		if (message.data.blockTags)
 			addBlocking();
 		else
@@ -107,7 +113,7 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 			v.postMessage(message);
 		});
 	}
-	else if (message.type=='openOptionsPage'){
+	else if (message.type==='openOptionsPage'){
 	  if (chrome.runtime.openOptionsPage) {
 	    // New way to open options pages, if supported (Chrome 42+).
 	    chrome.runtime.openOptionsPage();
@@ -119,9 +125,9 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 });
 
 chrome.runtime.onInstalled.addListener(function(details){
-	if (details.reason=='install')
+	if (details.reason==='install')
 		chrome.tabs.create({url:'chrome-extension://'+chrome.runtime.id+'/options.html#install',active:true});
-	else if ((details.reason=='update')&&(!dsDebug)){
+	else if ((details.reason==='update')&&(!dsDebug)){
 		chrome.notifications.create('',
 			{
 				type:'basic',

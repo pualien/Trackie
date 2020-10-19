@@ -13,6 +13,7 @@ dataslayer.options = dataslayer.options || {
     showYoubora: true,
     showKinesis: true,
     showBluekai: true,
+    showSegment: true,
     showGTMLoad: true,
     ignoredTags: [],
     collapseNested: false,
@@ -56,6 +57,7 @@ function loadSettings() {
         showBluekai: true,
         showNielsen: true,
         showYandex: true,
+        showSegment: true,
         showGTMLoad: true,
         ignoredTags: [],
         collapseNested: false,
@@ -66,14 +68,16 @@ function loadSettings() {
     };
 
     try {
-        if (typeof localStorage.options !== 'undefined') dataslayer.options = JSON.parse(localStorage.options);
+        if (typeof localStorage.options !== 'undefined'){
+           dataslayer.options = JSON.parse(localStorage.options);
+        }
     } catch (error) {
         console.log(error);
     }
 
     $.each(['showFloodlight',
         'showUniversal',
-        'showClassic', 'showGaAudiences', 'showDdm', 'showCriteo', 'showSitecatalyst', 'showGTMLoad', 'showFacebook', 'showWebtrekk', 'showComscore', 'showYoubora', 'showKinesis', 'showBluekai'
+        'showClassic', 'showGaAudiences', 'showDdm', 'showCriteo', 'showSitecatalyst', 'showGTMLoad', 'showFacebook', 'showWebtrekk', 'showComscore', 'showYoubora', 'showKinesis', 'showBluekai','showSegment'
     ], function (i, prop) {
         if (!dataslayer.options.hasOwnProperty(prop)) dataslayer.options[prop] = true;
     });
@@ -87,7 +91,7 @@ function loadSettings() {
     chrome.storage.sync.get(null, function (items) {
         var ourItems = items;
 
-        $.each(['showFloodlight', 'showUniversal', 'showClassic', 'showGaAudiences', 'showCriteo', 'showDdm', 'showSitecatalyst', 'showGTMLoad', 'showFacebook', 'showWebtrekk', 'showComscore', 'showYoubora', 'showKinesis', 'showBluekai', 'showGaAudiences'], function (i, prop) {
+        $.each(['showFloodlight', 'showUniversal', 'showClassic', 'showGaAudiences', 'showCriteo', 'showDdm', 'showSitecatalyst', 'showGTMLoad', 'showFacebook', 'showWebtrekk', 'showComscore', 'showYoubora', 'showKinesis', 'showBluekai', 'showGaAudiences', 'showSegment'], function (i, prop) {
             if (!ourItems.hasOwnProperty(prop)) ourItems[prop] = true;
         });
         if (!ourItems.hasOwnProperty('blockTags')) ourItems.blockTags = false;
