@@ -1,6 +1,11 @@
 Trackie Changelog
 ====================
-0.11.09
+0.11.11
+-------
+
++ added Google Analytics 4 property (formerly known as "App + Web" property)
+
+0.11.10
 -------
 
 + added Segment

@@ -3,6 +3,7 @@ dataslayer.options = dataslayer.options || {
     showFloodlight: true,
     showUniversal: true,
     showClassic: true,
+    showGA4: true,
     showGaAudiences: true,
     showDdm: true,
     showCriteo: true,
@@ -45,6 +46,7 @@ function loadSettings() {
         showFloodlight: true,
         showUniversal: true,
         showClassic: true,
+        showGA4: true,
         showGaAudiences: true,
         showDdm: true,
         showCriteo: true,
@@ -120,9 +122,9 @@ function loadSettings() {
 
 function saveSettings() {
     $('input').each(function () {
-        if ($(this).attr('id') == 'ignoredTags')
+        if ($(this).attr('id') === 'ignoredTags')
             dataslayer.options[$(this).attr('id')] = $(this).val().split(';');
-        else if ($(this).attr('id') == 'dataLayers')
+        else if ($(this).attr('id') === 'dataLayers')
             dataslayer.options[$(this).attr('id')] = $(this).val().split(';');
         else
             dataslayer.options[$(this).attr('id')] = $(this).prop('checked');
@@ -174,6 +176,6 @@ window.setTimeout(function () {
 
 
 $("#checkAll").change(function(){
-    var status = $(this).is(":checked") ? true : false;
+    var status = !!$(this).is(":checked");
     $(".check-tags").prop("checked",status);
 });

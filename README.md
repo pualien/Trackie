@@ -12,6 +12,7 @@ Trackie 🐞 is a Chrome extension to enhance debugging 👨🏼‍💻 of some 
 
 In addition Trackie intercepts ⚡️ a lot of most-used tag calls (page view, clicks, checkout...) 🕵🏻‍♂‍from:
 - Google Analytics
+- 💎 Google Analytics 4 property (GA4), formerly known as "App + Web" property 
 - GA Audiences
 - Adobe Analytics/Omniture
 - Floodlight
@@ -23,7 +24,7 @@ In addition Trackie intercepts ⚡️ a lot of most-used tag calls (page view, c
 - Kinesis
 - Webtrekk
 - Nielsen
-- Segment track + identify
+- 💎 Segment track + identify
 
 Tag calls can now be exported in csv 💾 in order to better analyze data collected offline!
 

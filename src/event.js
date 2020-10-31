@@ -16,6 +16,11 @@ function addBlocking(){
 				new chrome.declarativeWebRequest.RequestMatcher({
 					url: { hostSuffix: 'google-analytics.com', pathPrefix: '/collect', schemes: ['http','https'] },
 				}),
+
+				new chrome.declarativeWebRequest.RequestMatcher({
+					url: { hostSuffix: 'analytics.google.com', pathPrefix: '/g/collect', schemes: ['http','https'] },
+				}),
+
 				new chrome.declarativeWebRequest.RequestMatcher({
 					url: { hostSuffix: 'facebook.com', pathPrefix: '/tr', schemes: ['http','https'] },
 				}),
@@ -138,7 +143,7 @@ chrome.runtime.onInstalled.addListener(function(details){
 			function(notificationId){notifId=notificationId;}
 		);
 		chrome.notifications.onClicked.addListener(function(notificationId){
-			if (notificationId==notifId) chrome.tabs.create({url:'chrome-extension://'+chrome.runtime.id+'/options.html#whatsnew',active:true});
+			if (notificationId===notifId) chrome.tabs.create({url:'chrome-extension://'+chrome.runtime.id+'/options.html#whatsnew',active:true});
 		});
 	}
 });

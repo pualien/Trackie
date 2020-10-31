@@ -170,6 +170,82 @@ function parseUniversal(v, ref) {
 
 }
 
+
+function parseGA4(v, ref) {
+    var allParams = '';
+    var hasEnhanced = false;
+    for (var param in v.allParams) {
+        allParams = allParams + '<tr class="allparams allparams' + ref + '"><td>' + param + '</td><td>' + v.allParams[param] + '</td></tr>\n';
+        hasEnhanced = hasEnhanced || (param.match(/(pr[\d+].*|il[\d+].*|promo[\d+a].*|pa(l*)|tcc|co[sl])$/) !== null);
+    }
+    var therow = '<tr><td></td><td><u>' + v.tid + '</u> (GA4) <a class="toggle" data-toggle="' + ref + '">+</a></td></tr>\n' + allParams;
+
+    if (v.allParams.gtm)
+        therow = therow + '\n<tr><td></td><td><i>(via ' + v.allParams.gtm + ')</i></td></tr>\n';
+
+    if (hasEnhanced) therow = therow + '\n<tr><td></td><td><i>(contains enhanced ecommerce)</i></td></tr>\n';
+    if (v.uid)
+        therow = therow + '\n<tr><td><b>user ID</b></td><td><span>' + v.uid + '</span></td></tr>';
+
+    switch (v.t) {  // what type of hit is it?
+        case 'event':
+            therow = therow + '\n<tr><td><b>category</b></td><td><span>' + v.ec + '</span></td></tr>' +
+                '\n<tr><td><b>action</b></td><td><span>' + v.ea + '</span></td></tr>';
+            if (v.el) therow = therow + '\n<tr><td><b>label</b></td><td><span>' + v.el + '</span></td></tr>';
+            if (v.ev) therow = therow + '\n<tr><td><b>value</b></td><td><span>' + v.ev + '</span></td></tr>';
+            break;
+        case 'pageview':
+            therow = therow + '\n<tr><td><b>' + (v.dp ? 'path' : 'url') + '</b></td><td><span>' + (v.dp ? v.dp : v.dl) + '</span></td></tr>';
+            break;
+        case 'social':
+            therow = therow + '\n<tr><td><b>network</b></td><td><span>' + v.sn +
+                '</span></td></tr>\n<tr><td><b>action</b></td><td><span>' + v.sa +
+                '</span></td></tr>\n<tr><td><b>target</b></td><td><span>' + v.st + '</span></td></tr>';
+            break;
+        case 'transaction':
+            if (!v.cu) v.cu = '';  // if no currency code set, blank it for display purposes
+            therow = therow + '\n<tr><td></td><td><b>transaction ' + v.ti + '</b></td></tr>\n';
+            if (v.tr) therow = therow + '<tr><td><b>revenue</b></td><td><span>' + v.tr + ' ' + v.cu + '</span></td></tr>\n';
+            if (v.ts) therow = therow + '<tr><td><b>shipping</b></td><td><span>' + v.ts + ' ' + v.cu + '</span></td></tr>\n';
+            if (v.tt) therow = therow + '<tr><td><b>tax</b></td><td><span>' + v.tt + ' ' + v.cu + '</span></td></tr>\n';
+            if (v.ta) therow = therow + '<tr><td><b>affiliation</b></td><td><span>' + v.ta + '</span></td></tr>\n';
+            break;
+        case 'item':
+            if (!v.cu) v.cu = '';  // if no currency code set, blank it for display purposes
+            therow = therow + '\n<tr><td></td><td><b>transaction ' + v.ti + '</b></td></tr>\n';
+            if (v.in) therow = therow + '<tr><td><b>item/qty</b></td><td><span>(' + v.iq + 'x) ' + v.in + '</span></td></tr>\n';
+            if (v.ic) therow = therow + '<tr><td><b>sku</b></td><td><span>' + v.ic + '</span></td></tr>\n';
+            if (v.iv) therow = therow + '<tr><td><b>variation</b></td><td><span>' + v.iv + '</span></td></tr>\n';
+            if (v.ip) therow = therow + '<tr><td><b>price</b></td><td><span>' + v.ip + v.cu + '</span></td></tr>\n';
+            break;
+        case 'timing':
+            therow = therow + '\n<tr><td></td><td><b>timing hit</b></td></tr>\n';
+            if (v.allParams.utc) therow = therow + '<tr><td><b>category</b></td><td><span>' + v.allParams.utc + '</span></td></tr>\n';
+            if (v.allParams.utv) therow = therow + '<tr><td><b>variable</b></td><td><span>' + v.allParams.utv + '</span></td></tr>\n';
+            if (v.allParams.utt) therow = therow + '<tr><td><b>time</b></td><td><span>' + v.allParams.utt + '</span></td></tr>\n';
+            if (v.allParams.utl) therow = therow + '<tr><td><b>label</b></td><td><span>' + v.allParams.utl + '</span></td></tr>\n';
+            if (v.allParams.dns) therow = therow + '<tr><td><b>DNS time</b></td><td><span>' + v.allParams.dns + '</span></td></tr>\n';
+            if (v.allParams.pdt) therow = therow + '<tr><td><b>page time</b></td><td><span>' + v.allParams.pdt + '</span></td></tr>\n';
+            if (v.allParams.rrt) therow = therow + '<tr><td><b>redirect time</b></td><td><span>' + v.allParams.rrt + '</span></td></tr>\n';
+            if (v.allParams.tcp) therow = therow + '<tr><td><b>TCP time</b></td><td><span>' + v.allParams.tcp + '</span></td></tr>\n';
+            if (v.allParams.srt) therow = therow + '<tr><td><b>server time</b></td><td><span>' + v.allParams.srt + '</span></td></tr>\n';
+            break;
+    }
+
+    // enumerate custom dimensions and metrics
+    $.each(v.utmCD, function (cd, cdv) {
+        therow = therow + '<tr><td><b>CD ' + cd + '</b></td><td><span>' + cdv + '</span></td></tr>\n';
+    });
+    $.each(v.utmCM, function (cm, cmv) {
+        therow = therow + '<tr><td><b>CM ' + cm + '</b></td><td><span>' + cmv + '</span></td></tr>\n';
+    });
+    $.each(v.utmCG, function (cm, cmv) {
+        therow = therow + '<tr><td><b>CG ' + cm + '</b></td><td><span>' + cmv + '</span></td></tr>\n';
+    });
+
+    return therow;
+
+}
 // parseSiteCatalyst:
 // - v: tag object
 // - ref: pageindex_tagindex e.g '2_3'
@@ -1334,7 +1410,7 @@ function parseYandex(v, ref) {
             break;
         default:  //pageview
             url_split = v.__url.split('/');
-            if(url_split.length && url_split.length >= 2){
+            if (url_split.length && url_split.length >= 2) {
                 type = url_split[url_split.length - 2];
             }
             therow = therow + '\n<tr><td><b>type</b></td><td><span>' + type + '</span></td></tr>';
@@ -2048,7 +2124,7 @@ function parseKinesis(v, ref) {
 }
 
 function parseSegment(v, ref) {
-var allParams = '';
+    var allParams = '';
     v.utmac = 'Segment';
     for (var param in v.allParams)
         allParams = allParams + '<tr class="allparams allparams' + ref + '"><td>' + param + '</td><td>' + v.allParams[param] + '</td></tr>\n';
@@ -2349,6 +2425,7 @@ function datalayerHTML(datalayers, index, type, gtmIndex) {
 function multivarDLHTML(pageIndex) {
     return datalayerHTML(dataslayer.var_datas, pageIndex, 'var');
 }
+
 var gaTrackerId = 'UA-150859691-1';
 
 
@@ -2365,8 +2442,16 @@ function tagHTML(index) {
             var therow = '';
             if (((v.reqType === 'classic') || (v.reqType === 'dc_js')) && dataslayer.options.showClassic)
                 therow = parseClassic(v, index + '_' + q);
-            else if ((v.reqType === 'universal') && dataslayer.options.showUniversal)
-                therow = parseUniversal(v, index + '_' + q);
+            else if ((v.reqType === 'universal') && (dataslayer.options.showUniversal || dataslayer.options.showGA4)){
+                var type_of_ga = v.tid.indexOf('G-') === 0 ? '(GA4)' : '(Universal)';
+                if(dataslayer.options.showUniversal && type_of_ga === '(Universal)'){
+                    therow = parseUniversal(v, index + '_' + q);
+                }
+                if(dataslayer.options.showGA4 && type_of_ga === '(GA4)'){
+                    therow = parseGA4(v, index + '_' + q);
+                }
+            }
+
             else if ((v.reqType === 'floodlight') && dataslayer.options.showFloodlight)
                 therow = parseFloodlight(v);
             else if ((v.reqType === 'sitecatalyst') && dataslayer.options.showSitecatalyst)
@@ -2585,7 +2670,11 @@ function messageListener(message, sender, sendResponse) {
                         exists = true;
 
             if (!exists)
-                dataslayer.GTMs[dataslayer.activeIndex].push({id: message.gtmID, name: message.dLN, iframe: (message.url == 'iframe' ? true : false)});
+                dataslayer.GTMs[dataslayer.activeIndex].push({
+                    id: message.gtmID,
+                    name: message.dLN,
+                    iframe: (message.url == 'iframe' ? true : false)
+                });
 
             if (dataslayer.options.showGTMLoad)
                 $('#sub' + dataslayer.activeIndex + ' li.newpage').addClass('hasGTM').removeClass('seeking');
@@ -2616,7 +2705,11 @@ function messageListener(message, sender, sendResponse) {
         } else if (message.data == 'found') {
             dataslayer.loading = false;
 
-            dataslayer.TLMs[dataslayer.activeIndex] = {id: message.gtmID, name: message.dLN, iframe: (message.url == 'iframe' ? true : false)};
+            dataslayer.TLMs[dataslayer.activeIndex] = {
+                id: message.gtmID,
+                name: message.dLN,
+                iframe: (message.url == 'iframe' ? true : false)
+            };
 
             if (dataslayer.options.showGTMLoad)
                 $('#sub' + dataslayer.activeIndex + ' li.newpage').addClass('hasTLM').removeClass('seeking');
@@ -2629,7 +2722,11 @@ function messageListener(message, sender, sendResponse) {
             $('#sub' + dataslayer.activeIndex + ' li.newpage').addClass('hasTLM').removeClass('seeking').removeClass('noGTM');
             dataslayer.utag_datas[dataslayer.activeIndex] = collapseUDO(JSON.parse(message.data));
 
-            dataslayer.TLMs[dataslayer.activeIndex] = {id: message.gtmID, name: message.dLN, iframe: (message.url == 'iframe' ? true : false)};
+            dataslayer.TLMs[dataslayer.activeIndex] = {
+                id: message.gtmID,
+                name: message.dLN,
+                iframe: (message.url == 'iframe' ? true : false)
+            };
 
             updateUI(dataslayer.activeIndex, 'datalayer');
         }
@@ -2648,7 +2745,11 @@ function messageListener(message, sender, sendResponse) {
         } else if (message.data == 'found') {
             dataslayer.loading = false;
 
-            dataslayer.TCOs[dataslayer.activeIndex] = {id: message.gtmID, name: message.dLN, iframe: (message.url == 'iframe' ? true : false)};
+            dataslayer.TCOs[dataslayer.activeIndex] = {
+                id: message.gtmID,
+                name: message.dLN,
+                iframe: (message.url == 'iframe' ? true : false)
+            };
 
             if (dataslayer.options.showGTMLoad)
                 $('#sub' + dataslayer.activeIndex + ' li.newpage').addClass('hasTCO').removeClass('seeking');
@@ -2661,7 +2762,11 @@ function messageListener(message, sender, sendResponse) {
             $('#sub' + dataslayer.activeIndex + ' li.newpage').addClass('hasTCO').removeClass('seeking').removeClass('noGTM');
             dataslayer.tco_datas[dataslayer.activeIndex] = collapseUDO(JSON.parse(message.data));
 
-            dataslayer.TCOs[dataslayer.activeIndex] = {id: message.gtmID, name: message.dLN, iframe: (message.url == 'iframe' ? true : false)};
+            dataslayer.TCOs[dataslayer.activeIndex] = {
+                id: message.gtmID,
+                name: message.dLN,
+                iframe: (message.url == 'iframe' ? true : false)
+            };
 
             updateUI(dataslayer.activeIndex, 'datalayer');
         }
@@ -2680,7 +2785,10 @@ function messageListener(message, sender, sendResponse) {
         } else if (message.data == 'found') {
             dataslayer.loading = false;
 
-            dataslayer.dtm_datas[dataslayer.activeIndex] = {loadRules: JSON.parse(message.loadRules), buildDate: message.buildDate};
+            dataslayer.dtm_datas[dataslayer.activeIndex] = {
+                loadRules: JSON.parse(message.loadRules),
+                buildDate: message.buildDate
+            };
             // {loadRules: JSON.parse(message.loadRules), iframe: (message.url=='iframe'?true:false)};
 
             if (dataslayer.options.showGTMLoad)
@@ -2693,7 +2801,10 @@ function messageListener(message, sender, sendResponse) {
         } else {
             $('#sub' + dataslayer.activeIndex + ' li.newpage').addClass('hasDTM').removeClass('seeking').removeClass('noGTM');
 
-            dataslayer.dtm_datas[dataslayer.activeIndex] = {loadRules: JSON.parse(message.loadRules), buildDate: message.buildDate};
+            dataslayer.dtm_datas[dataslayer.activeIndex] = {
+                loadRules: JSON.parse(message.loadRules),
+                buildDate: message.buildDate
+            };
             // dataslayer.DTMs[dataslayer.activeIndex] = {loadRules: JSON.parse(message.loadRules), iframe: (message.url=='iframe'?true:false)};
 
             updateUI(dataslayer.activeIndex, 'datalayer');
@@ -2706,9 +2817,15 @@ function messageListener(message, sender, sendResponse) {
             dataslayer.loading = false;
 
             if (dataslayer.vars[dataslayer.activeIndex])
-                dataslayer.vars[dataslayer.activeIndex].push({name: message.dLN, iframe: (message.url == 'iframe' ? true : false)});
+                dataslayer.vars[dataslayer.activeIndex].push({
+                    name: message.dLN,
+                    iframe: (message.url == 'iframe' ? true : false)
+                });
             else
-                dataslayer.vars[dataslayer.activeIndex] = [{name: message.dLN, iframe: (message.url == 'iframe' ? true : false)}];
+                dataslayer.vars[dataslayer.activeIndex] = [{
+                    name: message.dLN,
+                    iframe: (message.url == 'iframe' ? true : false)
+                }];
 
             if (!dataslayer.var_datas[dataslayer.activeIndex]) dataslayer.var_datas[dataslayer.activeIndex] = {};
             dataslayer.var_datas[dataslayer.activeIndex][message.dLN] = {};
@@ -2810,22 +2927,22 @@ function flattenObject(ob) {
 
 function orderKeys(obj, expected) {
 
-  var keys = Object.keys(obj).sort(function keyOrder(k1, k2) {
-      if (k1 < k2) return -1;
-      else if (k1 > k2) return +1;
-      else return 0;
-  });
+    var keys = Object.keys(obj).sort(function keyOrder(k1, k2) {
+        if (k1 < k2) return -1;
+        else if (k1 > k2) return +1;
+        else return 0;
+    });
 
-  var i, after = {};
-  for (i = 0; i < keys.length; i++) {
-    after[keys[i]] = obj[keys[i]];
-    delete obj[keys[i]];
-  }
+    var i, after = {};
+    for (i = 0; i < keys.length; i++) {
+        after[keys[i]] = obj[keys[i]];
+        delete obj[keys[i]];
+    }
 
-  for (i = 0; i < keys.length; i++) {
-    obj[keys[i]] = after[keys[i]];
-  }
-  return obj;
+    for (i = 0; i < keys.length; i++) {
+        obj[keys[i]] = after[keys[i]];
+    }
+    return obj;
 }
 
 // newRequest: called on a new network request of any kind
@@ -2838,7 +2955,8 @@ function newRequest(request) {
         if (/stats\.g\.doubleclick\.net/i.test(request.request.url))
             reqType = 'dc_js';
         else reqType = 'classic';
-    } else if (/google-analytics\.com\/(r\/)?collect/i.test(request.request.url)) {
+
+    } else if (/(?:google-analytics\.com(\/[A-Za-z])?\/collect|analytics\.google\.com(\/[A-Za-z])?\/collect)/i.test(request.request.url)) {
         reqType = 'universal';
     } else if ((/\.doubleclick\.net\/activity/i.test(request.request.url.split('?')[0])) && (request.response.status !== 302)) {
         reqType = 'floodlight';
@@ -2856,44 +2974,41 @@ function newRequest(request) {
         reqType = 'kinesis';
     } else if (/stags\.bluekai\.com/i.test(request.request.url)) {
         reqType = 'bluekai';
-    }
-     else if (/google\.com\/ads\/ga-audiences/i.test(request.request.url)) {
+    } else if (/google\.com\/ads\/ga-audiences/i.test(request.request.url)) {
         reqType = 'ga-audiences';
-    }
-     else if (/adservice\.google\.com\/ddm\/fls\/z/i.test(request.request.url)){
+    } else if (/adservice\.google\.com\/ddm\/fls\/z/i.test(request.request.url)) {
         reqType = 'ddm';
-    }
-     else if (/criteo.com\/event/i.test(request.request.url)){
+    } else if (/criteo.com\/event/i.test(request.request.url)) {
         reqType = 'criteo';
-    }
-     else if (/api.segment.io\/v1\/t/i.test(request.request.url) || /api.segment.io\/v1\/i/i.test(request.request.url)){
+    } else if (/api.segment.io\/v1\/t/i.test(request.request.url) || /api.segment.io\/v1\/i/i.test(request.request.url)) {
         reqType = 'segment';
-    }
-     else if (/secure-it\.imrworldwide\.com\/cgi-bin\/gn/i.test(request.request.url)){
+    } else if (/secure-it\.imrworldwide\.com\/cgi-bin\/gn/i.test(request.request.url)) {
         reqType = 'nielsen';
-    }
-      else if (/mc\.yandex\.ru\/.*\/\d+/i.test(request.request.url) && !request.request.url.endsWith(".js")){
+    } else if (/mc\.yandex\.ru\/.*\/\d+/i.test(request.request.url) && !request.request.url.endsWith(".js")) {
         reqType = 'yandex';
-    }
-    else return;  //break out if it's not a tag we're looking for, else...
+    } else {
+        return;
+    }  //break out if it's not a tag we're looking for, else...
 
     var requestURI;
 
     if (request.request.method === 'GET') {
         requestURI = (reqType === 'floodlight' || reqType === 'ddm') ? request.request.url : request.request.url.split('?')[1];
     } else if (request.request.method === 'POST') {
-        requestURI = request.request.postData.text;
-        if(reqType === 'yandex'){
+        if (request.request.postData) {
+            requestURI = request.request.postData.text;
+        }
+        if (reqType === 'yandex' || reqType === 'universal') {
             requestURI = request.request.url.split('?')[1];
         }
-        if(reqType === 'facebook'){
+        if (reqType === 'facebook') {
             requestURI = decodeURIComponent(request.request.postData.text);
         }
     }
 
     // parse query string into key/value pairs
     var queryParams = {};
-    if ((reqType === 'classic') || (reqType === 'universal') || (reqType === 'dc_js') || (reqType === 'sitecatalyst') || (reqType === 'facebook') || (reqType === 'wbtrkk') || (reqType === 'youbora') || (reqType === 'comscore') || (reqType === 'ga-audiences')  || (reqType === 'criteo') || (reqType === 'nielsen') || (reqType === 'yandex')) {
+    if ((reqType === 'classic') || (reqType === 'universal') || (reqType === 'dc_js') || (reqType === 'sitecatalyst') || (reqType === 'facebook') || (reqType === 'wbtrkk') || (reqType === 'youbora') || (reqType === 'comscore') || (reqType === 'ga-audiences') || (reqType === 'criteo') || (reqType === 'nielsen') || (reqType === 'yandex')) {
         try {
             requestURI.split('&').forEach(function (pair) {
                     pair = pair.split('=');
@@ -2922,13 +3037,11 @@ function newRequest(request) {
             console.log('error ' + e + ' with url ' + request.request.url);
             reqType = false;
         }
-    }
-
-    else if (reqType === 'bluekai') {
+    } else if (reqType === 'bluekai') {
         try {
             requestURI.split('&').forEach(function (pair) {
                     pair = decodeURIComponent(pair);
-                    if(pair.includes("phint=")){
+                    if (pair.includes("phint=")) {
                         pair = pair.split('phint=')[1];
                     }
                     pair = pair.split('=');
@@ -2942,8 +3055,7 @@ function newRequest(request) {
         } catch (e) {
             console.log('error ' + e + ' with url ' + request.request.url);
         }
-    }
-    else if (reqType === 'ddm') {
+    } else if (reqType === 'ddm') {
         try {
             requestURI.split(';').forEach(function (pair) {
                     pair = pair.split('=');
@@ -2958,7 +3070,6 @@ function newRequest(request) {
             console.log('error ' + e + ' with url ' + request.request.url);
         }
     }
-
 
 
     var utmParams = {reqType: reqType, allParams: queryParams};
@@ -3021,117 +3132,177 @@ loadSettings();
 
 // CSV EXPORT
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _defineProperty(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {value: value, enumerable: true, configurable: true, writable: true});
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) {
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+        _typeof = function _typeof(obj) {
+            return typeof obj;
+        };
+    } else {
+        _typeof = function _typeof(obj) {
+            return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+        };
+    }
+    return _typeof(obj);
+}
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+}
 
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
 
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) {
+    if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
+        return;
+    }
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+    try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+            _arr.push(_s.value);
+            if (i && _arr.length === i) break;
+        }
+    } catch (err) {
+        _d = true;
+        _e = err;
+    } finally {
+        try {
+            if (!_n && _i["return"] != null) _i["return"]();
+        } finally {
+            if (_d) throw _e;
+        }
+    }
+    return _arr;
+}
 
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+}
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
 
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
 
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+function _iterableToArray(iter) {
+    if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
 
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) {
+        for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+            arr2[i] = arr[i];
+        }
+        return arr2;
+    }
+}
 
 function getKeys(obj) {
-  var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-  if (typeof obj === 'undefined' || obj === null) return [];
-  return [].concat(_toConsumableArray(Object.keys(obj).map(function (key) {
-    return "".concat(prefix).concat(key);
-  })), _toConsumableArray(Object.entries(obj).reduce(function (acc, _ref) {
-    var _ref2 = _slicedToArray(_ref, 2),
-        key = _ref2[0],
-        value = _ref2[1];
+    var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    if (typeof obj === 'undefined' || obj === null) return [];
+    return [].concat(_toConsumableArray(Object.keys(obj).map(function (key) {
+        return "".concat(prefix).concat(key);
+    })), _toConsumableArray(Object.entries(obj).reduce(function (acc, _ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+            key = _ref2[0],
+            value = _ref2[1];
 
-    if (_typeof(value) === 'object') return [].concat(_toConsumableArray(acc), _toConsumableArray(getKeys(value, "".concat(prefix).concat(key, "."))));
-    return acc;
-  }, [])));
+        if (_typeof(value) === 'object') return [].concat(_toConsumableArray(acc), _toConsumableArray(getKeys(value, "".concat(prefix).concat(key, "."))));
+        return acc;
+    }, [])));
 }
 
 function flatObject(obj) {
-  var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-  if (typeof obj === 'undefined' || obj === null) return {};
-  return Object.entries(obj).reduce(function (acc, _ref3) {
-    var _ref4 = _slicedToArray(_ref3, 2),
-        key = _ref4[0],
-        value = _ref4[1];
+    var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    if (typeof obj === 'undefined' || obj === null) return {};
+    return Object.entries(obj).reduce(function (acc, _ref3) {
+        var _ref4 = _slicedToArray(_ref3, 2),
+            key = _ref4[0],
+            value = _ref4[1];
 
-    if (_typeof(value) === 'object') return { ...acc,
-      ...flatObject(value, "".concat(prefix).concat(key, "."))
-    };
-    return _defineProperty({ ...acc
-    }, "".concat(prefix).concat(key), value);
-  }, {});
+        if (_typeof(value) === 'object') return {
+            ...acc,
+            ...flatObject(value, "".concat(prefix).concat(key, "."))
+        };
+        return _defineProperty({
+            ...acc
+        }, "".concat(prefix).concat(key), value);
+    }, {});
 }
 
 function escapeCsvValue(cell) {
-  if (typeof cell === 'string' && cell.replace(/ /g, '').match(/[\s,"]/)) {
-    return '"' + cell.replace(/"/g, '""') + '"';
-  }
+    if (typeof cell === 'string' && cell.replace(/ /g, '').match(/[\s,"]/)) {
+        return '"' + cell.replace(/"/g, '""') + '"';
+    }
 
-  return cell;
+    return cell;
 }
 
 function objectsToCsv(arrayOfObjects) {
 
-  // collect all available keys
-  var keys = new Set(arrayOfObjects.reduce(function (acc, item) {
-    return [].concat(_toConsumableArray(acc), _toConsumableArray(getKeys(item)));
-  }, [])); // for each object create all keys
+    // collect all available keys
+    var keys = new Set(arrayOfObjects.reduce(function (acc, item) {
+        return [].concat(_toConsumableArray(acc), _toConsumableArray(getKeys(item)));
+    }, [])); // for each object create all keys
 
-  var values = arrayOfObjects.map(function (item) {
-    var fo = flatObject(item);
-    var val = Array.from(keys).map(function (key) {
-      return key in fo ? escapeCsvValue(fo[key]) : '';
+    var values = arrayOfObjects.map(function (item) {
+        var fo = flatObject(item);
+        var val = Array.from(keys).map(function (key) {
+            return key in fo ? escapeCsvValue(fo[key]) : '';
+        });
+        return val.join(';');
     });
-    return val.join(';');
-  });
-  return "".concat(Array.from(keys).join(';'), "\n").concat(values.join('\n'));
+    return "".concat(Array.from(keys).join(';'), "\n").concat(values.join('\n'));
 }
 
 function downloadFile(data, fileName) {
 
-        var arrayOfObjects = data.map(function(row){
-            return Object.assign({reqType: row.reqType}, row.allParams)
-        });
-        var csv = objectsToCsv(arrayOfObjects);
+    var arrayOfObjects = data.map(function (row) {
+        return Object.assign({reqType: row.reqType}, row.allParams)
+    });
+    var csv = objectsToCsv(arrayOfObjects);
 
-        var blob = new Blob([ csv ], {
-            type : "application/csv;charset=utf-8;"
-        });
+    var blob = new Blob([csv], {
+        type: "application/csv;charset=utf-8;"
+    });
 
-        if (window.navigator.msSaveBlob) {
-            // FOR IE BROWSER
-            navigator.msSaveBlob(blob, fileName);
-        } else {
-            // FOR OTHER BROWSERS
-            try{
-                var csvUrl = URL.createObjectURL(blob);
-                chrome.downloads.download({url: csvUrl, filename:  fileName});
-            }
-            catch (e) {
-                // FALLBACK FOR CHROME PERMISSION ERRORS
-                var link = document.createElement("a");
-                link.href = csvUrl;
-                link.style = "visibility:hidden";
-                link.download = fileName;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-
+    if (window.navigator.msSaveBlob) {
+        // FOR IE BROWSER
+        navigator.msSaveBlob(blob, fileName);
+    } else {
+        // FOR OTHER BROWSERS
+        try {
+            var csvUrl = URL.createObjectURL(blob);
+            chrome.downloads.download({url: csvUrl, filename: fileName});
+        } catch (e) {
+            // FALLBACK FOR CHROME PERMISSION ERRORS
+            var link = document.createElement("a");
+            link.href = csvUrl;
+            link.style = "visibility:hidden";
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
+
+    }
 }
-
-
 
 
 //set up UI
@@ -3164,7 +3335,6 @@ $('#downloadbtnyes').click(function () {
 
 
 });
-
 
 
 if (chrome.devtools.panels.themeName === 'dark') {

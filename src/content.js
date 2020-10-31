@@ -19,9 +19,9 @@ if (!(/addthis\.com|facebook\.com|twitter\.com/.test(document.location.host))){
 
 	var dataslayer = {};
 	dataslayer.helperListener = function(event){
-		if ((event.data.type && (event.data.type.substr(0,10)=='dataslayer'))){
+		if ((event.data.type && (event.data.type.substr(0,10)==='dataslayer'))){
 			try{
-				if (event.source == window)
+				if (event.source === window)
 					chrome.runtime.sendMessage(event.data);
 				else{
 					event.data.iframed = true;
@@ -39,7 +39,7 @@ if (!(/addthis\.com|facebook\.com|twitter\.com/.test(document.location.host))){
 
 	chrome.runtime.onMessage.addListener(
 	  function(request, sender, sendResponse) {
-	  	if (request.ask=='refresh')
+	  	if (request.ask==='refresh')
 	  		var refreshTag = document.createElement('script');
 	  		refreshTag.type = 'text/javascript';
 	  		refreshTag.innerHTML = 'dataslayer.refresh();';
