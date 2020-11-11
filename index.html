@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Trackie | A Chrome extension to enhance debugging of some frequently-used tag management platforms (Google Tag Manager and Tealium) in combination with some frequently-used tags (Google Analytics, Google Analytics 4, GA Audiences, Ddm, Criteo, Adobe Analytics/Omniture, Floodlight, Comscore, Facebook, Bluekai, Youbora, Kinesis, Webtrekk, Segment)</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Trackie" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A Chrome extension to enhance debugging of some frequently-used tag management platforms (Google Tag Manager and Tealium) in combination with some frequently-used tags (Google Analytics, Google Analytics 4, GA Audiences, Ddm, Criteo, Adobe Analytics/Omniture, Floodlight, Comscore, Facebook, Bluekai, Youbora, Kinesis, Webtrekk, Segment)" />
+<meta property="og:description" content="A Chrome extension to enhance debugging of some frequently-used tag management platforms (Google Tag Manager and Tealium) in combination with some frequently-used tags (Google Analytics, Google Analytics 4, GA Audiences, Ddm, Criteo, Adobe Analytics/Omniture, Floodlight, Comscore, Facebook, Bluekai, Youbora, Kinesis, Webtrekk, Segment)" />
+<link rel="canonical" href="https://pualien.github.io/Trackie/" />
+<meta property="og:url" content="https://pualien.github.io/Trackie/" />
+<meta property="og:site_name" content="Trackie" />
+<script type="application/ld+json">
+{"@type":"WebSite","headline":"Trackie","url":"https://pualien.github.io/Trackie/","description":"A Chrome extension to enhance debugging of some frequently-used tag management platforms (Google Tag Manager and Tealium) in combination with some frequently-used tags (Google Analytics, Google Analytics 4, GA Audiences, Ddm, Criteo, Adobe Analytics/Omniture, Floodlight, Comscore, Facebook, Bluekai, Youbora, Kinesis, Webtrekk, Segment)","name":"Trackie","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link rel="stylesheet" href="/Trackie/assets/css/style.css?v=c5fe4d5f7e30ae9c44ea832051cf4850eb671307">
+      <meta name="google-site-verification" content="doa_eogfWXHFD4O7nKenomE0EwpFILpBE7u3WXj-tUg" />
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Trackie</h1>
+      <h2 class="project-tagline">A Chrome extension to enhance debugging of some frequently-used tag management platforms (Google Tag Manager and Tealium) in combination with some frequently-used tags (Google Analytics, Google Analytics 4, GA Audiences, Ddm, Criteo, Adobe Analytics/Omniture, Floodlight, Comscore, Facebook, Bluekai, Youbora, Kinesis, Webtrekk, Segment)</h2>
+      
+        <a href="https://github.com/pualien/Trackie" class="btn">View on GitHub</a>
+      
+      
+    </section>
+
+    <section class="main-content">
+      <p><img src="https://i.imgur.com/iymRnYu.jpg" alt="" /></p>
+
+<h1 id="trackie">Trackie</h1>
+
+<p>Debug and test tag manager and analytics implementations.
+Trackie 🐞 is a Chrome extension to enhance debugging 👨🏼‍💻 of some frequently-used tag management platforms 🌩:</p>
+<ul>
+  <li>Google Tag Manager</li>
+  <li>Tealium</li>
+  <li>Commanders Act</li>
+  <li>DTM</li>
+</ul>
+
+<p>In addition Trackie intercepts ⚡️ a lot of most-used tag calls (page view, clicks, checkout…) 🕵🏻‍♂‍from:</p>
+<ul>
+  <li>Google Analytics</li>
+  <li>💎 Google Analytics 4 property (GA4), formerly known as “App + Web” property</li>
+  <li>GA Audiences</li>
+  <li>Adobe Analytics/Omniture</li>
+  <li>Floodlight</li>
+  <li>Comscore</li>
+  <li>Criteo</li>
+  <li>Facebook</li>
+  <li>Bluekai</li>
+  <li>Youbora</li>
+  <li>Kinesis</li>
+  <li>Webtrekk</li>
+  <li>Nielsen</li>
+  <li>💎 Segment track + identify</li>
+</ul>
+
+<p>Tag calls can now be exported in csv 💾 in order to better analyze data collected offline!</p>
+
+<h2 id="installation">Installation</h2>
+<p>To use the unpacked source version, enable Developer mode in the <a href="chrome://extensions/">Chrome extensions page</a> and <em>Load unpacked extension</em> from the checked-out <strong>src</strong> folder.</p>
+
+<p>The latest official version is on the <a href="https://chrome.google.com/webstore/detail/trackie/iphjjodolgbelaogcefgpegebgecopeh">Chrome Web Store</a>.</p>
+
+<h2 id="use">Use</h2>
+<p>A new panel will appear in Developer Tools titled <strong>Trackie</strong>, containing a page group and URL for each pageload in the tab, with each push to the dataLayer variable (in the case of GTM’s array-based data layer) appearing in a subgroup.</p>
+
+<p><img src="https://i.imgur.com/AG7VjK8.png" alt="" /></p>
+
+<ol>
+  <li>Current URL / TMS logo (or X if no TMS found); click to collapse/expand this page</li>
+  <li>TMS container ID; becomes a dropdown menu if multiple containers are present</li>
+  <li>Data layer items; items with a <strong>+</strong> are objects containing sub-items and can be expanded one level by clicking <strong>+</strong> or expanded fully by shift-clicking <strong>+</strong></li>
+  <li>Information on fired tags (GA, Floodlight, SiteCatalyst); click <strong>+</strong> here to see all parameters in the request</li>
+  <li>Trackie settings and information</li>
+  <li>Clear history</li>
+</ol>
+
+<p>All items are in reverse chronological order (newest on top).</p>
+
+<p>Note that vertical alignment between the data layer and any fired tags does not necessarily indicate a tie between the two. If a page contains only a data layer, or only tags, that side of the panel will expand to take up the width of the entire panel.</p>
+
+<h2 id="settings">Settings</h2>
+<h3 id="general">General</h3>
+<ul>
+  <li>show data layer presence: enable (default) or disable the TMS logo / X in each page group. Useful for disabling if you are using Trackie for e.g. pure GA debugging rather than tag management debugging.</li>
+  <li>auto-collapse nested data layer variables: when this option is enabled (default), nested variables such as Google Analytics enhanced ecommerce will automatically be collapsed to save space.</li>
+  <li>block tags from firing: requires use of the Chrome dev or beta channels. When this option is enabled, supported tags will be blocked from actually sending to the analytics platform. Note that blocking does not take the Tags selections into account (i.e. all supported tags are blocked, regardless of whether or not they are shown).</li>
+</ul>
+
+<h3 id="tags">Tags</h3>
+<p>All supported tag types are shown by default; these can be individually disabled.</p>
+
+<h3 id="ignored-ids">Ignored IDs</h3>
+<p>To filter out tags hitting specific analytics properties, enter the property IDs here.</p>
+
+<h2 id="misc">Misc</h2>
+<p>Trackie was built with and thanks to the following:</p>
+<ul>
+  <li><a href="https://github.com/sean-adams/dataslayer">DataSlayer</a></li>
+  <li><a href="https://github.com/google/data-layer-helper">Google Data Layer Helper Library</a></li>
+  <li><a href="http://purecss.io/">Pure</a></li>
+  <li><a href="http://jquery.com/">jQuery</a></li>
+  <li><a href="http://leanmodal.finelysliced.com.au/">leanModal</a></li>
+  <li><a href="http://www.google.com/fonts/specimen/Open+Sans">Open Sans</a></li>
+  <li><a href="https://github.com/MaxArt2501/object-observe">Massimo Artizzu’s O.o polyfill</a></li>
+</ul>
+
+<p>Trackie is under the MIT License. See LICENSE.md.</p>
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/pualien/Trackie">Trackie</a> is maintained by <a href="https://github.com/pualien">pualien</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </section>
+
+    
+  </body>
+</html>
