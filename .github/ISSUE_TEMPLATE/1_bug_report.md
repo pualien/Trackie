@@ -1,6 +1,6 @@
 ---
 name: "\U0001F41B Bug report"
-about: Create a report to help us improve Trackie
+about: Create a report to help Trackie to improve
 labels: bug
 
 
@@ -11,10 +11,10 @@ Issue tracker is **ONLY** used for reporting bugs. Please use [stackoverflow](ht
 <!--- Provide a general summary of the issue in the Title above -->
 
 ## Expected Behavior
-<!--- Tell us what should happen -->
+<!--- What should happen -->
 
 ## Current Behavior
-<!--- Tell us what happens instead of the expected behavior -->
+<!--- What happens instead of the expected behavior -->
 
 ## Possible Solution
 <!--- Not obligatory, but suggest a fix/reason for the bug, -->
@@ -29,7 +29,7 @@ Issue tracker is **ONLY** used for reporting bugs. Please use [stackoverflow](ht
 
 ## Context (Environment)
 <!--- How has this issue affected you? What are you trying to accomplish? -->
-<!--- Providing context helps us come up with a solution that is most useful in the real world -->
+<!--- Providing context that helps to come up with a solution that is most useful in the real world -->
 
 <!--- Provide a general summary of the issue in the Title above -->
 
