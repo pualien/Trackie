@@ -64,7 +64,7 @@ All supported tag types are shown by default; these can be individually disabled
 ### Ignored IDs
 To filter out tags hitting specific analytics properties, enter the property IDs here.
 
-Bug - Feature request
+Bug report - feature request
 --- 
 Feel free to open new issues following the [issue templates](https://github.com/pualien/Trackie/issues/new/choose)
 
