@@ -8,7 +8,6 @@
         Tag Manager, Tealium, Commanders Act, DTM) in combination with some frequently-used tags (Google Analytics,
         Google Analytics 4, GA Audiences, Ddm, Criteo, Adobe Analytics/Omniture, Floodlight, Comscore, Facebook,
         Bluekai, Youbora, Kinesis, Webtrekk, Segment)</title>
-    <meta name="generator" content="Jekyll v3.9.0"/>
     <meta property="og:title" content="Trackie"/>
     <meta property="og:locale" content="en_US"/>
     <meta name="description"
@@ -139,10 +138,6 @@
     <h3 id="ignored-ids">Ignored IDs</h3>
     <p>To filter out tags hitting specific analytics properties, enter the property IDs here.</p>
 
-    Bug - Feature request
-    ---
-
-
     <h2 id="bug_feature_request">Bug report - feature request</h2>
     <p>Feel free to open new issues following the <a href="https://github.com/pualien/Trackie/issues/new/choose">issue
         templates</a>.</p>
@@ -169,20 +164,25 @@
 
         <span class="site-footer-credits"><a href="https://www.linkedin.com/in/matteosenardi/">Linkedin</a> - <a
                 href="https://drive.google.com/file/d/1vmVRE-WqtB_L4um1_F3RsmYltLSPd743/view">Curriculum Vitae</a>👇.</span>
-        <span class="site-footer-credits"><iframe
+        </br></br>
+        <span class="site-footer-credits"><iframe style="" onload="this.style.visibility='visible';"
                 src="https://drive.google.com/file/d/1vmVRE-WqtB_L4um1_F3RsmYltLSPd743/preview" width="100%"
-                height="480" style="margin-top: 1em"></iframe></span>
+                height="480"></iframe></span>
     </footer>
 </section>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FQ36S065G7"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'G-FQ36S065G7');
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-FQ36S065G7');
 </script>
 
 <script>
@@ -208,5 +208,7 @@
 
     window.addEventListener("load", scrollToHash, false);
     window.addEventListener("hashchange", scrollToHash, false);</script>
+
+
 </body>
 </html>
