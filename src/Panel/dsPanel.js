@@ -2986,6 +2986,8 @@ function newRequest(request) {
         reqType = 'nielsen';
     } else if (/mc\.yandex\.ru\/.*\/\d+/i.test(request.request.url) && !request.request.url.endsWith(".js")) {
         reqType = 'yandex';
+    } else if (/api-js\.mixpanel\.com\/track/i.test(request.request.url) && !request.request.url.endsWith(".js")) {
+        reqType = 'mixpanel';
     } else {
         return;
     }  //break out if it's not a tag we're looking for, else...
@@ -3037,7 +3039,18 @@ function newRequest(request) {
             console.log('error ' + e + ' with url ' + request.request.url);
             reqType = false;
         }
-    } else if (reqType === 'bluekai') {
+    }
+    else if (reqType === 'kinesis' && requestURI && requestURI.includes('Records') && request.request.method === 'POST') {
+        try {
+            queryParams = orderKeys(flattenObject(JSON.parse(decodeBase64(JSON.parse(requestURI)['Records'][0]["Data"]))));
+            queryParams['tid'] = JSON.parse(requestURI)['StreamName'];
+
+        } catch (e) {
+            console.log('error ' + e + ' with url ' + request.request.url);
+            reqType = false;
+        }
+    }
+    else if (reqType === 'bluekai') {
         try {
             requestURI.split('&').forEach(function (pair) {
                     pair = decodeURIComponent(pair);

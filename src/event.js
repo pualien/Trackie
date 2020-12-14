@@ -76,7 +76,10 @@ function addBlocking(){
 				}),
 				new chrome.declarativeWebRequest.RequestMatcher({
 					url: { hostSuffix: 'api.segment.io', pathPrefix: '/v1/i', schemes: ['http','https'] },
-				})
+				}),
+				new chrome.declarativeWebRequest.RequestMatcher({
+					url: { hostSuffix: 'api-js.mixpanel.com', pathPrefix: 'track', schemes: ['http','https'] },
+				}),
 				],
 			actions: [
 				new chrome.declarativeWebRequest.RedirectToTransparentImage()
